@@ -1,23 +1,15 @@
-const loginInput = document.querySelector("#login-form input")
-const loginButton = document.querySelector("#login-form button")
-const sPlaceholder = loginInput.value
+const title = document.createElement('h2')
+title.innerHTML = '<p>This is dynamic web, bro :)'
+document.body.appendChild(title)
 
-function onLoginBtnClick() {
-    const sName = loginInput.value
-    if(sName == sPlaceholder){
-        console.log("please enter your name :)")
-    }else{
-        console.log('hello ' + sName)
-    }
+const colorbase = 'titleBase'
+const colorchange = 'titleClicked'
+title.classList.add(colorbase)
+
+function OnTitleClick(){
     
+    title.classList.toggle(colorbase)   
+    title.classList.toggle(colorchange)   
 }
 
-function onLogInInputKeyPress(evt){
-    var code = evt.which?evt.which:event.keyCode;
-    if(code == 13 ){
-        onLoginBtnClick()
-    }
-}
-
-loginButton.addEventListener("click",onLoginBtnClick)
-loginInput.addEventListener("keydown",onLogInInputKeyPress)
+title.addEventListener('click',OnTitleClick)
