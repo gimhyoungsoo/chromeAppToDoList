@@ -1,45 +1,62 @@
 const toDoForm = document.getElementById('todo_form')
 const toDoInput = toDoForm.querySelector('input')
 const toDoList = document.getElementById('todo_list')
+let toDoArr = []
 
-const toDoArr = []
-const TO_DO_LIST_ITEM = 'todoListItem'
+const TODO_KEY = 'toDoKey'
 
 
-function saveToDo(item){
-    toDoArr.push(item)
-    localStorage.setItem(TO_DO_LIST_ITEM, toDoArr)
+
+function saveToDos() {
+    localStorage.setItem(TODO_KEY, JSON.stringify(toDoArr))
 }
 
-function onDeleteToDo(evt){
-    const deleteString = evt.target.parentElement.children[0].innerText 
-    toDoArr.splice(deleteString)
-    console.log(toDoArr)
-    evt.target.parentElement.remove()
-    // evt.path[1].remove()
+
+function onDeleteToDo(evt) {
+    const li = evt.target.parentElement;
+    li.remove();
+    toDoArr = toDoArr.filter((toDo) => toDo.id !== parseInt(li.id))
+    saveToDos();
 }
 
-function WriteToDo(newLine){
+function showToDo(newToDos) {
     const li = document.createElement('li')
+    li.id = newToDos.id
     const span = document.createElement('span')
-    span.innerText = newLine
+    span.innerText = newToDos.text
+
     const btnDelete = document.createElement('button')
     btnDelete.innerText = '❌'
+    btnDelete.addEventListener('click', onDeleteToDo)
 
     li.appendChild(span)
     li.appendChild(btnDelete)
     toDoList.appendChild(li)
-    console.log(toDoArr)
-    btnDelete.addEventListener('click',onDeleteToDo)
 }
 
-function onToDoSubmit(evt){
+
+function onToDoSubmit(evt) {
     evt.preventDefault()
-    const newLine = toDoInput.value
-    toDoInput.value =''
-    saveToDo(newLine)
-    WriteToDo(newLine)
-    
+    const newToDos = toDoInput.value
+
+    toDoInput.value = ''
+
+    const newToDosObj = {
+        text: newToDos,
+        id: Date.now()
+    }
+    toDoArr.push(newToDosObj)
+    showToDo(newToDosObj)
+    saveToDos()
 }
 
-toDoForm.addEventListener('submit',onToDoSubmit)
+// ====================== 초기화 ==============================
+
+toDoForm.addEventListener('submit', onToDoSubmit)
+
+const savedItem = localStorage.getItem(TODO_KEY)
+if (savedItem) {
+    parsedItem = JSON.parse(savedItem)
+    parsedItem.forEach(showToDo)
+    toDoArr = parsedItem
+}
